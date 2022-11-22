@@ -1,4 +1,15 @@
 name: MineTag
 version: 0.1
 author: M47Z
-main: tk.m47z.mineTag.MineTag
+main: tk.m47z.mineTag.Main
+description: This plugin implements the Game of Tag in minecraft 1.19.2
+
+commands:
+  mt-start:
+    description: Starts a Tag Game.
+    usage: /<command>
+    permission-message: You have no permission to run this command
+  mt-stop:
+    description: Stops a Tag Game.
+    usage: /<command>
+    permission-message: You have no permission to run this command

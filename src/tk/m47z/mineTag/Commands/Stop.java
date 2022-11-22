@@ -4,21 +4,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import tk.m47z.mineTag.Game;
 import tk.m47z.mineTag.Main;
 
-import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.NoSuchElementException;
 
-public class Start implements CommandExecutor
+public class Stop implements CommandExecutor
 {
-	public Start() throws NoSuchElementException
+	public Stop() throws NoSuchElementException
 	{
-		PluginCommand command = Main.getInstance().getCommand("mt-start");
+		PluginCommand command = Main.getInstance().getCommand("mt-stop");
 		if ( command == null )
 			throw new NoSuchElementException();
 		
@@ -42,36 +40,20 @@ public class Start implements CommandExecutor
 			return false;
 		}
 		
-		if ( main.getGameByPlayer(sender) != null )
+		Game game = main.getGameByPlayer(sender);
+		if ( game == null )
 		{
-			Bukkit.getLogger().info("[MineTag] Player is not in a game");
+			Bukkit.getLogger().info("[MineTag] Error obtaining Player Game object");
 			return false;
 		}
 		
-		Game game = new Game();
-		
-		// add all world players
-		//
-		for ( Player player : sender.getWorld().getPlayers() )
+		if ( !game.stop() )
 		{
-			try
-			{
-				game.addPlayer(player);
-			}
-			catch ( KeyAlreadyExistsException e )
-			{
-				Bukkit.getLogger().info("[MineTag] Non-Unique UUID found: " + player.getUniqueId());
-			}
-		}
-		
-		if ( !game.start(sender.getUniqueId()) )
-		{
-			Bukkit.getLogger().info("[MineTag] Error beginning Tag Game");
+			Bukkit.getLogger().info("[MineTag] Error finishing Tag Game");
 			return false;
 		}
 		
-		main.addGame(game);
-		Bukkit.getLogger().info("[MineTag] Tag Game began");
+		Bukkit.getLogger().info("[MineTag] Tag Game finished");
 		return true;
 	}
 }
