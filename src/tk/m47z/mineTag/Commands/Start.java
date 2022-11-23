@@ -38,17 +38,17 @@ public class Start implements CommandExecutor
 		Player sender = Bukkit.getPlayer(commandSender.getName());
 		if ( sender == null )
 		{
-			Bukkit.getLogger().info("[MineTag] Error obtaining sender Player object");
+			Bukkit.getLogger().severe("[MineTag] Error obtaining sender Player object");
 			return false;
 		}
 		
 		if ( main.getGameByPlayer(sender) != null )
 		{
-			Bukkit.getLogger().info("[MineTag] Player is not in a game");
+			Bukkit.getLogger().warning("[MineTag] Player is in a game");
 			return false;
 		}
 		
-		Game game = new Game();
+		Game game = new Game(sender.getUniqueId());
 		
 		// add all world players
 		//
@@ -60,18 +60,16 @@ public class Start implements CommandExecutor
 			}
 			catch ( KeyAlreadyExistsException e )
 			{
-				Bukkit.getLogger().info("[MineTag] Non-Unique UUID found: " + player.getUniqueId());
+				Bukkit.getLogger().warning("[MineTag] Non-Unique UUID found: " + player.getUniqueId());
 			}
-		}
-		
-		if ( !game.start(sender.getUniqueId()) )
-		{
-			Bukkit.getLogger().info("[MineTag] Error beginning Tag Game");
-			return false;
+			
+			player.setCanPickupItems(false);
 		}
 		
 		main.addGame(game);
-		Bukkit.getLogger().info("[MineTag] Tag Game began");
+		game.schedule();
+		
+		Bukkit.getLogger().info("[MineTag] Match scheduled to 30 scs");
 		return true;
 	}
 }

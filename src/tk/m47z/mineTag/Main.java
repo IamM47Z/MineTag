@@ -5,14 +5,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import tk.m47z.mineTag.Commands.Start;
 import tk.m47z.mineTag.Commands.Stop;
+import tk.m47z.mineTag.Listeners.DamageListener;
+import tk.m47z.mineTag.Listeners.DropListener;
+import tk.m47z.mineTag.Listeners.HeldListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class Main extends JavaPlugin
 {
 	private static Main instance = null;
-	private List<Game> games = new ArrayList<Game>();
+	private final List<Game> games = new ArrayList<Game>();
 	
 	public static Main getInstance()
 	{
@@ -22,6 +26,14 @@ public class Main extends JavaPlugin
 	public void addGame(Game game)
 	{
 		games.add(game);
+	}
+	
+	public void removeGame(Game game) throws NoSuchElementException
+	{
+		if ( !games.contains(game) )
+			throw new NoSuchElementException();
+		
+		games.remove(game);
 	}
 	
 	public Game getGameByPlayer(Player player)
@@ -38,8 +50,16 @@ public class Main extends JavaPlugin
 	{
 		instance = this;
 		
+		// register commands
+		//
 		new Stop();
 		new Start();
+		
+		// register listeners
+		//
+		new DropListener();
+		new HeldListener();
+		new DamageListener();
 		
 		Bukkit.getLogger().info("MineTag has been Enabled");
 	}

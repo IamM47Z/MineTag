@@ -47,11 +47,13 @@ public class Stop implements CommandExecutor
 			return false;
 		}
 		
-		if ( !game.stop() )
+		if ( !game.free() )
 		{
 			Bukkit.getLogger().info("[MineTag] Error finishing Tag Game");
 			return false;
 		}
+		
+		main.removeGame(game);
 		
 		Bukkit.getLogger().info("[MineTag] Tag Game finished");
 		return true;
